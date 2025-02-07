@@ -72,7 +72,7 @@ public class BasicGameApp implements Runnable {
 		BackgroundPic= Toolkit.getDefaultToolkit().getImage("Sky.jpeg");
 		bird = new Bird(300, 20);
 		bird2 = new Bird(100, 20);
-
+		bird3 = new Bird(50,20);
 	}// BasicGameApp()
 
 
