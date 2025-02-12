@@ -55,10 +55,7 @@ public class BasicGameApp implements Runnable {
 	}
 
 
-	// Constructor Method
-	// This has the same name as the class
-	// This section is the setup portion of the program
-	// Initialize your variables and construct your program objects here.
+
 	public BasicGameApp() {
 
 		setUpGraphics();
@@ -102,13 +99,16 @@ public class BasicGameApp implements Runnable {
 		bird.bounce();
 		bird2.move();
 		bird2.wrap();
-
-
+        bird3.move();
+        bird3.wrap();
 	}
+	//fight count is outside of if statement so it doesnt reset allows to keep constant count of number of fights t
+private int Fightcount;
 
 	public void collisions(){
 		if(bird.rec.intersects(bird2.rec)&& bird.iscrash== false && bird2.isAlive && bird.isAlive){
-			System.out.println("boom");
+		Fightcount++;
+			System.out.println("Brid fight number " + Fightcount);
 			bird.dx = -bird.dx;
 			bird.dy = -bird.dy;
 			bird2.dx = -bird2.dx;
@@ -118,7 +118,8 @@ public class BasicGameApp implements Runnable {
 			bird2.height = bird2.height+2;
 			bird2.width = bird2.width+2;
 			bird.iscrash = true;
-			bird2.isAlive = false;
+			bird2.isAlive = true;
+			bird3.isAlive = true;
 
 		}
 		if(!bird.rec.intersects(bird2.rec)){
@@ -183,9 +184,13 @@ public class BasicGameApp implements Runnable {
 		if(bird2.isAlive == true) {
 			g.drawImage(bird2pic, bird2.xpos, bird2.ypos, bird2.width, bird2.height, null);
 		}
+
+
+		if (bird3.isAlive == true) {
+			g.drawImage(brid3pic, bird3.xpos, bird3.ypos, bird2.width, bird3.height, null );
+		}
 		g.dispose();
 		bufferStrategy.show();
-
 
 	}
 

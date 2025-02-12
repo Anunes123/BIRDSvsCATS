@@ -92,13 +92,4 @@ public class Bird {
         rec=new Rectangle(xpos,ypos,width, height);
     }
 
-
-
-
 }
-
-
-
-
-
-
