@@ -5,27 +5,21 @@ import java.awt.*;
  */
 public class Bird {
 
-    //VARIABLE DECLARATION SECTION
-    //Here's where you state which variables you are going to use.
-    public String name;                //holds the name of the hero
-    public int xpos;                //the x position
-    public int ypos;                //the y position
-    public int dx;                    //the speed of the hero in the x direction
-    public int dy;                    //the speed of the hero in the y direction
+
+
+    //allows to set the size of bird and specify other peramiters like if it alive
+    public int xpos;                //the x position of the bird
+    public int ypos;                //the y position of the bird
+    public int dx;                    //the bird speed in the x direction
+    public int dy;                    //the bird spee in the y direction
     public int width;
     public int height;
-    public boolean isAlive;            //a boolean to denote if the hero is alive or dead
+    public boolean isAlive;            //a boolean to show if bird is alive or dead
     public Rectangle rec;
     public boolean iscrash;
 
-    // METHOD DEFINITION SECTION
 
-    // Constructor Definition
-    // A constructor builds the object when called and sets variable values.
-
-
-    //This is a SECOND constructor that takes 3 parameters.  This allows us to specify the hero's name and position when we build it.
-    // if you put in a String, an int and an int the program will use this constructor instead of the one above.
+    //bird peramiters eg if it alive
     public Bird(int pXpos, int pYpos) {
         xpos = pXpos;
         ypos = pYpos;
@@ -47,7 +41,7 @@ public class Bird {
     }
 
 
-
+//changes signs of dx and dy when they hit the edges of the screen to make them bounce
     public void bounce() {
         if (xpos > 1000) {
             dx = -dx;
@@ -71,7 +65,13 @@ public class Bird {
         rec=new Rectangle(xpos,ypos,width, height);
 
     }
+    //keeps bird from moving up and down
+    public void smallbirdMoves(){
+        dx=4;
+        dy=0;
 
+    }
+//if a bird hits any side of the screen this method makes it so that the bird is replaced at the opposite side so it wraps
     public void wrap() {
         if (xpos > 1000) {
             xpos=1;
@@ -89,6 +89,7 @@ public class Bird {
             xpos=700;
 
         }
+        // re adds the rectangle
         rec=new Rectangle(xpos,ypos,width, height);
     }
 

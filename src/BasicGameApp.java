@@ -27,7 +27,7 @@ public class BasicGameApp implements Runnable {
 	//Declare the variables used in the program
 	//You can set their initial values too
 
-	//Sets the width and height of the program window
+	//Sets the width and height of the window
 	final int WIDTH = 1000;
 	final int HEIGHT = 700;
 
@@ -65,50 +65,47 @@ public class BasicGameApp implements Runnable {
 
 		birdpic = Toolkit.getDefaultToolkit().getImage("Bird1.jpeg"); //load the picture
 		bird2pic= Toolkit.getDefaultToolkit().getImage("Hawk1.jpg");
-		brid3pic = Toolkit.getDefaultToolkit().getImage("Worm.jpg");
+		brid3pic = Toolkit.getDefaultToolkit().getImage("SmallBird.jpg");
 		BackgroundPic= Toolkit.getDefaultToolkit().getImage("Sky.jpeg");
 		bird = new Bird(300, 20);
 		bird2 = new Bird(100, 20);
-		bird3 = new Bird(50,20);
+		bird3 = new Bird(50,600);
 	}// BasicGameApp()
 
 
 //*******************************************************************************
-//User Method Section
-//
-// put your code to do things here.
 
-	// main thread
-	// this is the code that plays the game after you set things up
 	public void run() {
 
-		//for the moment we will loop things forever.
+
 		while (true) {
 
-			moveThings();  //move all the game objects
-			render();  // paint the graphics
-			pause(20); // sleep for 10 ms
+			moveThings();  //moves all the birds
+			render();  // renders the graphics for birds and sky
+			pause(20); // stop for 10 ms
 		}
 	}
-
-
 	public void moveThings() {
-		//calls the move( ) code in the objects
+		//calls the move methods+collisions and small bird methods
 		collisions();
+		smallBird();
 		bird.move();
 		bird.bounce();
 		bird2.move();
 		bird2.wrap();
         bird3.move();
-        bird3.wrap();
+       bird3.smallbirdMoves();
+	   bird3.wrap();
 	}
-	//fight count is outside of if statement so it doesnt reset allows to keep constant count of number of fights t
+	//fight count is outside of if statement so it doesnt reset allows to keep constant count of number of total fights
 private int Fightcount;
 
+
+	// sees if the rectangles around the birds touch, if they do then it adds to the fight count and displays it, sends the birds in opposite directions, changes the speed and size of the birds
 	public void collisions(){
 		if(bird.rec.intersects(bird2.rec)&& bird.iscrash== false && bird2.isAlive && bird.isAlive){
 		Fightcount++;
-			System.out.println("Brid fight number " + Fightcount);
+			System.out.println("Bird fight number " + Fightcount);
 			bird.dx = -bird.dx;
 			bird.dy = -bird.dy;
 			bird2.dx = -bird2.dx;
@@ -120,49 +117,84 @@ private int Fightcount;
 			bird.iscrash = true;
 			bird2.isAlive = true;
 			bird3.isAlive = true;
-
 		}
+		// stops birds from stuttering why they hit
 		if(!bird.rec.intersects(bird2.rec)){
 			bird.iscrash=false;
-
-
-
 		}
 
+
 	}
-	//Pauses or sleeps the computer for the amount specified in milliseconds
+	// two counters for when each big bird hits the little one. brown bird is Sbird2 and blue bird is SBird1
+	public int SBird1;
+	public int SBird2;
+//makes it so that if the Brown bird hits the little bird it sends the brown bird away, resets the small bird to a random ypos, and adds to the counter for that bird + displays the count
+	public void smallBird(){
+		if (bird3.rec.intersects(bird2.rec)&& bird.iscrash== false && bird2.isAlive && bird.isAlive){
+			SBird2++;
+			System.out.println("Small birds eaten by brown bird " + SBird2);
+
+			bird2.dx = -bird2.dx;
+			bird2.dy = -bird2.dy;
+			bird2.iscrash = true;
+			bird3.dx=-bird3.dx;
+			bird3.ypos = (int) (10 + (Math.random() * (650 - 10)));
+			wincon();
+		}
+		//makes it so that if the Blue bird hits the little bird it sends the Blue bird away, resets the small bird to a random ypos, and adds to the counter for that bird + displays the count
+
+		if (bird3.rec.intersects(bird.rec)&& bird.iscrash== false && bird2.isAlive && bird.isAlive){
+SBird1++;
+			System.out.println("Small birds eaten by blue bird " + SBird1);
+			bird.dx = -bird.dx;
+			bird.dy = -bird.dy;
+			bird.iscrash = true;
+			bird3.dx=-bird3.dx;
+			bird3.ypos = (int) (10 + (Math.random() * (650 - 10)));
+			wincon();
+}
+
+
+
+	}
+	// a check to see if one of the big birds has hit the small one 6 or more times, if it has then it souts that that bird won and stops the small
+	public void wincon(){
+		if (SBird1>=6){
+			System.out.println("Blue bird wins!!!!");
+			bird3.isAlive=false;
+
+	}
+		if (SBird2>=6){
+			System.out.println("Brown bird wins!!!!");
+			bird3.isAlive=false;
+		}
+
+
+	}
+
 	public void pause(int time) {
-		//sleep
 		try {
 			Thread.sleep(time);
 		} catch (InterruptedException e) {
-
 		}
 	}
-
-	//Graphics setup method
+	//Graphics setup
 	private void setUpGraphics() {
 		frame = new JFrame("Application Template");   //Create the program window or frame.  Names it.
 
 		panel = (JPanel) frame.getContentPane();  //sets up a JPanel which is what goes in the frame
 		panel.setPreferredSize(new Dimension(WIDTH, HEIGHT));  //sizes the JPanel
-		panel.setLayout(null);   //set the layout
+		panel.setLayout(null);   //set up the screen layout
 
-		// creates a canvas which is a blank rectangular area of the screen onto which the application can draw
-		// and trap input events (Mouse and Keyboard events)
 		canvas = new Canvas();
 		canvas.setBounds(0, 0, WIDTH, HEIGHT);
 		canvas.setIgnoreRepaint(true);
-
-		panel.add(canvas);  // adds the canvas to the panel.
-
-		// frame operations
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);  //makes the frame close and exit nicely
-		frame.pack();  //adjusts the frame and its contents so the sizes are at their default or larger
-		frame.setResizable(false);   //makes it so the frame cannot be resized
-		frame.setVisible(true);      //IMPORTANT!!!  if the frame is not set to visible it will not appear on the screen!
-
-		// sets up things so the screen displays images nicely.
+		panel.add(canvas);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.pack();
+		frame.setResizable(false);
+		frame.setVisible(true);
+		// sets up the graphics
 		canvas.createBufferStrategy(2);
 		bufferStrategy = canvas.getBufferStrategy();
 		canvas.requestFocus();
@@ -171,13 +203,13 @@ private int Fightcount;
 	}
 
 
-	//paints things on the screen using bufferStrategy
+	//renders  the birds
 	private void render() {
 		Graphics2D g = (Graphics2D) bufferStrategy.getDrawGraphics();
 		g.clearRect(0, 0, WIDTH, HEIGHT);
 		g.drawImage(BackgroundPic,0,0,WIDTH,HEIGHT,  null);
 
-		//draw the image of the astronaut
+		//draw the Birds if they are alive
 		g.drawImage(birdpic, bird.xpos, bird.ypos, bird.width, bird.height, null);
 
 
